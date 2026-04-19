@@ -1,0 +1,160 @@
+.poke-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 16px 16px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  animation: fadeIn 0.3s ease both;
+  outline: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.poke-card:hover,
+.poke-card:focus-visible {
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--type-color);
+  box-shadow: 0 8px 24px rgba(0,0,0,.4), 0 0 0 1px var(--type-color);
+}
+
+/* Captured state */
+.poke-card.captured {
+  border-color: rgba(183, 28, 28, 0.5);
+  box-shadow: 0 0 0 1px rgba(229, 57, 53, 0.2),
+              inset 0 0 40px rgba(229, 57, 53, 0.05);
+}
+
+.poke-card.captured:hover,
+.poke-card.captured:focus-visible {
+  border-color: #e53935;
+  box-shadow: 0 8px 24px rgba(0,0,0,.5),
+              0 0 0 1px #e53935,
+              0 0 20px rgba(229, 57, 53, 0.25);
+}
+
+.card-glow {
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--type-color);
+  opacity: 0.08;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.poke-card:hover .card-glow { opacity: 0.18; }
+
+/* Capture button */
+.capture-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  padding: 0;
+}
+
+.capture-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.15);
+}
+
+.capture-btn.is-captured {
+  background: rgba(183, 28, 28, 0.25);
+  border-color: rgba(229, 57, 53, 0.5);
+}
+
+.capture-btn.is-captured:hover {
+  background: rgba(183, 28, 28, 0.45);
+  border-color: #e53935;
+}
+
+@keyframes capture-shake {
+  0%   { transform: scale(1)    rotate(0deg); }
+  15%  { transform: scale(1.35) rotate(-22deg); }
+  30%  { transform: scale(1.2)  rotate(18deg); }
+  45%  { transform: scale(1.25) rotate(-12deg); }
+  60%  { transform: scale(1.1)  rotate(8deg); }
+  75%  { transform: scale(1.05) rotate(-4deg); }
+  100% { transform: scale(1)    rotate(0deg); }
+}
+
+.capture-btn.animating {
+  animation: capture-shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.card-number {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
+
+.card-img-wrap {
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.4));
+}
+
+.poke-card:hover .card-img {
+  transform: scale(1.1) translateY(-4px);
+}
+
+.card-name {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+  color: var(--text);
+  text-align: center;
+}
+
+.card-types {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.type-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 3px 10px;
+  border-radius: 20px;
+}

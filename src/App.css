@@ -1,0 +1,280 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ─────────────────────────────────────── */
+.app-header {
+  background: linear-gradient(135deg, #16162a 0%, #1e1e36 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 28px 20px;
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-ball {
+  font-size: 32px;
+  color: #e53935;
+  line-height: 1;
+  animation: spin 8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.logo h1 {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #fff 30%, #a0a0c0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+  margin-left: 44px;
+}
+
+/* ── Tabs nav ────────────────────────────────────── */
+.tabs-nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tabs-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 4px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 14px 6px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.tab:hover { color: var(--text); filter: none; transform: none; }
+
+.tab-active {
+  color: var(--text);
+  border-bottom-color: #7c6aff;
+}
+
+.tab-ball-icon {
+  display: flex;
+  align-items: center;
+}
+
+.tab-badge {
+  background: var(--surface2);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  color: var(--muted);
+  transition: background 0.2s, color 0.2s;
+}
+
+.tab-badge-red {
+  background: rgba(229, 57, 53, 0.2);
+  color: #ef5350;
+}
+
+/* ── Controls ────────────────────────────────────── */
+.controls {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 24px 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.search-wrap {
+  position: relative;
+  max-width: 480px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: var(--muted);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.search-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 11px 40px 11px 42px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+  border-color: #7c6aff;
+  box-shadow: 0 0 0 3px rgba(124,106,255,.15);
+}
+
+.search-input::placeholder { color: var(--muted); }
+
+.search-clear {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+  transition: color 0.15s;
+}
+.search-clear:hover { color: var(--text); }
+
+.type-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.type-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
+  text-transform: capitalize;
+}
+
+.type-btn:hover {
+  background: var(--hover-bg, var(--surface2));
+  color: var(--text);
+  border-color: transparent;
+  transform: translateY(-1px);
+}
+
+.type-btn.active {
+  font-weight: 700;
+  transform: translateY(-1px);
+}
+
+/* ── Grid ────────────────────────────────────────── */
+.grid-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 24px 20px 48px;
+  flex: 1;
+}
+
+.poke-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+/* ── Empty state ─────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 80px 20px;
+  color: var(--muted);
+}
+
+.empty-ball {
+  font-size: 64px;
+  opacity: 0.3;
+}
+
+.empty-pokeball {
+  opacity: 0.35;
+  display: flex;
+}
+
+.empty-title {
+  font-size: 16px;
+  color: var(--text);
+}
+
+.empty-sub {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.empty-state p {
+  font-size: 16px;
+}
+
+.empty-state button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.empty-state button:hover { border-color: #7c6aff; }
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 600px) {
+  .logo h1 { font-size: 24px; }
+  .poke-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+}

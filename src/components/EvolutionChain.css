@@ -1,0 +1,126 @@
+.evo-chain {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+
+/* One column per evolutionary stage */
+.evo-stage-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Row: [connector] [pokemon] */
+.evo-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* The arrow + method label between stages */
+.evo-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 56px;
+}
+
+.evo-method {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  line-height: 1.3;
+  max-width: 64px;
+}
+
+.evo-arrow {
+  font-size: 18px;
+  color: var(--muted);
+  line-height: 1;
+}
+
+/* Pokemon cell */
+.evo-mon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 8px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: default;
+}
+
+.evo-mon.evo-current {
+  border-color: var(--type-color);
+  background: color-mix(in srgb, var(--type-color) 12%, transparent);
+}
+
+.evo-img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,.4));
+}
+
+.evo-name {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: var(--text);
+  text-align: center;
+}
+
+.evo-no-evo {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* Skeleton shimmer while loading */
+.evo-skeleton {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.evo-skel-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.evo-skel-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, var(--surface2) 25%, #252545 50%, var(--surface2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.evo-skel-label {
+  width: 52px;
+  height: 10px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--surface2) 25%, #252545 50%, var(--surface2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}

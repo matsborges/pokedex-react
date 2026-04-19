@@ -113,6 +113,16 @@
   color: #ef5350;
 }
 
+.tab-badge-gold {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.tab-icon {
+  display: flex;
+  align-items: center;
+}
+
 /* ── Controls ────────────────────────────────────── */
 .controls {
   max-width: 1200px;
@@ -238,6 +248,11 @@
 }
 
 .empty-pokeball {
+  opacity: 0.35;
+  display: flex;
+}
+
+.empty-heart {
   opacity: 0.35;
   display: flex;
 }

@@ -27,7 +27,7 @@
   box-shadow: 0 8px 24px rgba(0,0,0,.4), 0 0 0 1px var(--type-color);
 }
 
-/* Captured state */
+/* ── Captured state ──────────────────────────────── */
 .poke-card.captured {
   border-color: rgba(183, 28, 28, 0.5);
   box-shadow: 0 0 0 1px rgba(229, 57, 53, 0.2),
@@ -40,6 +40,21 @@
   box-shadow: 0 8px 24px rgba(0,0,0,.5),
               0 0 0 1px #e53935,
               0 0 20px rgba(229, 57, 53, 0.25);
+}
+
+/* ── Wished state (gold, wins over captured) ─────── */
+.poke-card.wished {
+  border-color: rgba(180, 110, 0, 0.55);
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.2),
+              inset 0 0 40px rgba(245, 158, 11, 0.05);
+}
+
+.poke-card.wished:hover,
+.poke-card.wished:focus-visible {
+  border-color: #f59e0b;
+  box-shadow: 0 8px 24px rgba(0,0,0,.5),
+              0 0 0 1px #f59e0b,
+              0 0 20px rgba(245, 158, 11, 0.25);
 }
 
 .card-glow {
@@ -57,7 +72,54 @@
 
 .poke-card:hover .card-glow { opacity: 0.18; }
 
-/* Capture button */
+/* ── Wish button — top left ──────────────────────── */
+.wish-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  padding: 0;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.wish-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.15);
+}
+
+.wish-btn.is-wished {
+  background: rgba(120, 80, 0, 0.3);
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+.wish-btn.is-wished:hover {
+  background: rgba(120, 80, 0, 0.5);
+  border-color: #f59e0b;
+}
+
+@keyframes wish-pulse {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.55); }
+  50%  { transform: scale(0.9); }
+  75%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.wish-btn.animating {
+  animation: wish-pulse 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* ── Capture button — top right ──────────────────── */
 .capture-btn {
   position: absolute;
   top: 8px;
@@ -72,8 +134,8 @@
   justify-content: center;
   cursor: pointer;
   z-index: 2;
-  transition: background 0.15s, border-color 0.15s, transform 0.15s;
   padding: 0;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
 }
 
 .capture-btn:hover {
@@ -106,6 +168,7 @@
   animation: capture-shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
+/* ── Rest of card ────────────────────────────────── */
 .card-number {
   align-self: flex-start;
   font-size: 11px;

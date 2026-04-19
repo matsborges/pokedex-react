@@ -2,17 +2,50 @@ import { useEffect, useState } from 'react'
 import { TYPE_COLORS, STAT_COLORS, STAT_LABELS } from '../utils/typeColors'
 import EvolutionChain from './EvolutionChain'
 import Pokeball from './Pokeball'
+import Heart from './Heart'
 import './PokemonModal.css'
 
-export default function PokemonModal({ pokemon, onClose, captured, onCapture }) {
+// ── Encounter helpers ──────────────────────────────
+const NO_ENCOUNTER_MSG = {
+  1:   'Pokémon inicial — obtido ao escolher no Laboratório Oak',
+  4:   'Pokémon inicial — obtido ao escolher no Laboratório Oak',
+  7:   'Pokémon inicial — obtido ao escolher no Laboratório Oak',
+  106: 'Obtido no Dojo de Luta em Saffron City',
+  107: 'Obtido no Dojo de Luta em Saffron City',
+  131: 'Presente na Silph Co. em Saffron City',
+  133: 'Presente no apartamento em Celadon City',
+  138: 'Revivido a partir do Fóssil Helix',
+  139: 'Evolução de Pokémon fóssil (Omanyte)',
+  140: 'Revivido a partir do Fóssil Cúpula',
+  141: 'Evolução de Pokémon fóssil (Kabuto)',
+  142: 'Revivido a partir do Âmbar Antigo',
+  144: 'Pokémon Lendário — único no jogo',
+  145: 'Pokémon Lendário — único no jogo',
+  146: 'Pokémon Lendário — único no jogo',
+  150: 'Pokémon Lendário — encontrado em Cerulean Cave',
+  151: 'Obtido em evento especial',
+}
+
+function formatLocation(raw) {
+  return raw
+    .replace(/-area$/, '')
+    .replace(/-\d+f$/, m => ' ' + m.replace(/-/, '').toUpperCase())
+    .split('-')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
+}
+
+export default function PokemonModal({ pokemon, onClose, captured, onCapture, wished, onWish }) {
   const id          = String(pokemon.id).padStart(3, '0')
   const image       = pokemon.sprites.other?.['official-artwork']?.front_default
                    ?? pokemon.sprites.front_default
   const primaryType = pokemon.types[0].type.name
   const typeColor   = TYPE_COLORS[primaryType]?.bg ?? '#7c6aff'
 
-  const [evoChain, setEvoChain]     = useState(null)
-  const [evoLoading, setEvoLoading] = useState(true)
+  const [evoChain, setEvoChain]           = useState(null)
+  const [evoLoading, setEvoLoading]       = useState(true)
+  const [encounters, setEncounters]       = useState(null)
+  const [encLoading, setEncLoading]       = useState(true)
 
   useEffect(() => {
     const handler = e => { if (e.key === 'Escape') onClose() }
@@ -27,7 +60,10 @@ export default function PokemonModal({ pokemon, onClose, captured, onCapture }) 
   useEffect(() => {
     setEvoChain(null)
     setEvoLoading(true)
-    async function fetchChain() {
+    setEncounters(null)
+    setEncLoading(true)
+
+    async function fetchSpeciesData() {
       try {
         const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.id}`)
         const species    = await speciesRes.json()
@@ -40,11 +76,31 @@ export default function PokemonModal({ pokemon, onClose, captured, onCapture }) 
         setEvoLoading(false)
       }
     }
-    fetchChain()
+
+    async function fetchEncounters() {
+      try {
+        const res  = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.id}/encounters`)
+        const data = await res.json()
+        setEncounters(data)
+      } catch {
+        setEncounters([])
+      } finally {
+        setEncLoading(false)
+      }
+    }
+
+    fetchSpeciesData()
+    fetchEncounters()
   }, [pokemon.id])
 
   const height = (pokemon.height / 10).toFixed(1)
   const weight = (pokemon.weight / 10).toFixed(1)
+
+  const uniqueLocations = encounters
+    ? [...new Set(encounters.map(e => e.location_area.name))]
+    : []
+  const displayLocations = uniqueLocations.slice(0, 9)
+  const extraCount       = uniqueLocations.length - displayLocations.length
 
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
@@ -64,24 +120,30 @@ export default function PokemonModal({ pokemon, onClose, captured, onCapture }) 
               {pokemon.types.map(({ type }) => {
                 const c = TYPE_COLORS[type.name] ?? { bg: '#9e9e9e', text: '#fff' }
                 return (
-                  <span
-                    key={type.name}
-                    className="type-badge"
-                    style={{ background: c.bg, color: c.text }}
-                  >
+                  <span key={type.name} className="type-badge" style={{ background: c.bg, color: c.text }}>
                     {type.name}
                   </span>
                 )
               })}
             </div>
-            <button
-              className={`modal-capture-btn${captured ? ' is-captured' : ''}`}
-              onClick={onCapture}
-              aria-label={captured ? `Liberar ${pokemon.name}` : `Capturar ${pokemon.name}`}
-            >
-              <Pokeball captured={captured} size={16} />
-              {captured ? 'Capturado' : 'Capturar'}
-            </button>
+            <div className="modal-actions">
+              <button
+                className={`modal-action-btn modal-capture-btn${captured ? ' is-captured' : ''}`}
+                onClick={onCapture}
+                aria-label={captured ? `Liberar ${pokemon.name}` : `Capturar ${pokemon.name}`}
+              >
+                <Pokeball captured={captured} size={15} />
+                {captured ? 'Capturado' : 'Capturar'}
+              </button>
+              <button
+                className={`modal-action-btn modal-wish-btn${wished ? ' is-wished' : ''}`}
+                onClick={onWish}
+                aria-label={wished ? `Remover ${pokemon.name} dos desejos` : `Adicionar ${pokemon.name} aos desejos`}
+              >
+                <Heart wished={wished} size={15} />
+                {wished ? 'Desejado' : 'Desejar'}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -116,14 +178,36 @@ export default function PokemonModal({ pokemon, onClose, captured, onCapture }) 
                 <span className="stat-label">{label}</span>
                 <span className="stat-value">{base_stat}</span>
                 <div className="stat-track">
-                  <div
-                    className="stat-fill"
-                    style={{ '--pct': `${pct}%`, background: color }}
-                  />
+                  <div className="stat-fill" style={{ '--pct': `${pct}%`, background: color }} />
                 </div>
               </div>
             )
           })}
+        </div>
+
+        <div className="modal-section">
+          <h3 className="stats-title">Onde Encontrar</h3>
+          {encLoading ? (
+            <div className="loc-skeleton">
+              {[80, 120, 95, 110].map((w, i) => (
+                <div key={i} className="loc-skel-chip" style={{ width: w, animationDelay: `${i * 0.1}s` }} />
+              ))}
+            </div>
+          ) : uniqueLocations.length > 0 ? (
+            <div className="loc-list">
+              {displayLocations.map(name => (
+                <span key={name} className="loc-chip">{formatLocation(name)}</span>
+              ))}
+              {extraCount > 0 && (
+                <span className="loc-chip loc-extra">+{extraCount} locais</span>
+              )}
+            </div>
+          ) : (
+            <p className="loc-none">
+              <span className="loc-none-icon">◎</span>
+              {NO_ENCOUNTER_MSG[pokemon.id] ?? 'Não encontrado na natureza'}
+            </p>
+          )}
         </div>
 
         <div className="modal-section">

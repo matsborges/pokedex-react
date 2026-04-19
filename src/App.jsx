@@ -3,19 +3,25 @@ import PokemonCard from './components/PokemonCard'
 import SkeletonCard from './components/SkeletonCard'
 import PokemonModal from './components/PokemonModal'
 import Pokeball from './components/Pokeball'
+import Heart from './components/Heart'
 import { ALL_TYPES, TYPE_COLORS } from './utils/typeColors'
 import './App.css'
 
-const TOTAL       = 151
-const STORAGE_KEY = 'pokedex_captured'
+const TOTAL        = 151
+const CAPTURED_KEY = 'pokedex_captured'
+const WISHED_KEY   = 'pokedex_wished'
 
-function loadCaptured() {
+function loadSet(key) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    const raw = localStorage.getItem(key)
     return new Set(raw ? JSON.parse(raw) : [])
   } catch {
     return new Set()
   }
+}
+
+function saveSet(key, set) {
+  localStorage.setItem(key, JSON.stringify([...set]))
 }
 
 export default function App() {
@@ -25,7 +31,8 @@ export default function App() {
   const [activeType, setActiveType] = useState('all')
   const [selected, setSelected]     = useState(null)
   const [activeTab, setActiveTab]   = useState('all')
-  const [captured, setCaptured]     = useState(loadCaptured)
+  const [captured, setCaptured]     = useState(() => loadSet(CAPTURED_KEY))
+  const [wished, setWished]         = useState(() => loadSet(WISHED_KEY))
 
   useEffect(() => {
     async function fetchAll() {
@@ -52,24 +59,37 @@ export default function App() {
       if (isCaptured && !window.confirm(`Liberar ${poke.name}?`)) return prev
       const next = new Set(prev)
       isCaptured ? next.delete(poke.id) : next.add(poke.id)
-      localStorage.setItem(STORAGE_KEY, JSON.stringify([...next]))
+      saveSet(CAPTURED_KEY, next)
+      return next
+    })
+  }
+
+  function toggleWish(e, poke) {
+    e.stopPropagation()
+    setWished(prev => {
+      const isWished = prev.has(poke.id)
+      if (isWished && !window.confirm(`Remover ${poke.name} da lista de desejos?`)) return prev
+      const next = new Set(prev)
+      isWished ? next.delete(poke.id) : next.add(poke.id)
+      saveSet(WISHED_KEY, next)
       return next
     })
   }
 
   const filtered = useMemo(() => {
-    const q    = search.toLowerCase().trim()
-    const base = activeTab === 'mine'
-      ? pokemon.filter(p => captured.has(p.id))
-      : pokemon
+    const q = search.toLowerCase().trim()
+    const base = activeTab === 'mine' ? pokemon.filter(p => captured.has(p.id))
+               : activeTab === 'wish' ? pokemon.filter(p => wished.has(p.id))
+               : pokemon
     return base.filter(p => {
       const matchSearch = p.name.includes(q) || String(p.id).padStart(3, '0').includes(q)
       const matchType   = activeType === 'all' || p.types.some(t => t.type.name === activeType)
       return matchSearch && matchType
     })
-  }, [pokemon, search, activeType, activeTab, captured])
+  }, [pokemon, search, activeType, activeTab, captured, wished])
 
-  const isMinedEmpty = activeTab === 'mine' && !loading && captured.size === 0
+  const showMineEmpty = activeTab === 'mine' && !loading && captured.size === 0
+  const showWishEmpty = activeTab === 'wish' && !loading && wished.size === 0
 
   return (
     <div className="app">
@@ -92,16 +112,26 @@ export default function App() {
             Todos
             {!loading && <span className="tab-badge">{pokemon.length}</span>}
           </button>
+
           <button
             className={`tab${activeTab === 'mine' ? ' tab-active' : ''}`}
             onClick={() => setActiveTab('mine')}
           >
-            <span className="tab-ball-icon">
-              <Pokeball captured={captured.size > 0} size={15} />
-            </span>
+            <span className="tab-icon"><Pokeball captured={captured.size > 0} size={15} /></span>
             Minha Pokédex
             <span className={`tab-badge${captured.size > 0 ? ' tab-badge-red' : ''}`}>
               {captured.size} / {pokemon.length || TOTAL}
+            </span>
+          </button>
+
+          <button
+            className={`tab${activeTab === 'wish' ? ' tab-active' : ''}`}
+            onClick={() => setActiveTab('wish')}
+          >
+            <span className="tab-icon"><Heart wished={wished.size > 0} size={14} /></span>
+            Lista de Desejos
+            <span className={`tab-badge${wished.size > 0 ? ' tab-badge-gold' : ''}`}>
+              {wished.size}
             </span>
           </button>
         </div>
@@ -153,24 +183,25 @@ export default function App() {
           <div className="poke-grid">
             {Array.from({ length: 20 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
-        ) : isMinedEmpty ? (
+        ) : showMineEmpty ? (
           <div className="empty-state">
-            <span className="empty-pokeball">
-              <Pokeball captured={false} size={72} />
-            </span>
+            <span className="empty-pokeball"><Pokeball captured={false} size={72} /></span>
             <p className="empty-title">Nenhum Pokémon capturado ainda</p>
-            <p className="empty-sub">
-              Clique na pokébola em qualquer card para começar sua coleção
-            </p>
+            <p className="empty-sub">Clique na pokébola em qualquer card para começar sua coleção</p>
+            <button onClick={() => setActiveTab('all')}>Explorar Pokémons</button>
+          </div>
+        ) : showWishEmpty ? (
+          <div className="empty-state">
+            <span className="empty-heart"><Heart wished={false} size={72} /></span>
+            <p className="empty-title">Lista de desejos vazia</p>
+            <p className="empty-sub">Clique no coração em qualquer card para adicionar à lista</p>
             <button onClick={() => setActiveTab('all')}>Explorar Pokémons</button>
           </div>
         ) : filtered.length === 0 ? (
           <div className="empty-state">
             <span className="empty-ball">◉</span>
             <p>Nenhum Pokémon encontrado</p>
-            <button onClick={() => { setSearch(''); setActiveType('all') }}>
-              Limpar filtros
-            </button>
+            <button onClick={() => { setSearch(''); setActiveType('all') }}>Limpar filtros</button>
           </div>
         ) : (
           <div className="poke-grid" key={activeTab}>
@@ -181,6 +212,8 @@ export default function App() {
                 onClick={() => setSelected(p)}
                 captured={captured.has(p.id)}
                 onCapture={e => toggleCapture(e, p)}
+                wished={wished.has(p.id)}
+                onWish={e => toggleWish(e, p)}
               />
             ))}
           </div>
@@ -193,6 +226,8 @@ export default function App() {
           onClose={() => setSelected(null)}
           captured={captured.has(selected.id)}
           onCapture={e => toggleCapture(e, selected)}
+          wished={wished.has(selected.id)}
+          onWish={e => toggleWish(e, selected)}
         />
       )}
     </div>

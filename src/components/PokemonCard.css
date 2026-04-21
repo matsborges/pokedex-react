@@ -72,11 +72,11 @@
 
 .poke-card:hover .card-glow { opacity: 0.18; }
 
-/* ── Wish button — top left ──────────────────────── */
+/* ── Wish button — top right, beside capture btn ─── */
 .wish-btn {
   position: absolute;
   top: 8px;
-  left: 8px;
+  right: 42px;
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 50%;

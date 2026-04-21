@@ -123,6 +123,76 @@
   align-items: center;
 }
 
+/* ── Games dropdown ──────────────────────────────── */
+.tab-games-wrap {
+  position: relative;
+  margin-left: auto;
+}
+
+.tab-games {
+  gap: 6px;
+}
+
+.tab-games-chevron {
+  font-size: 11px;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+.tab-games-chevron.open {
+  transform: rotate(180deg);
+}
+
+.tab-games-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px;
+  min-width: 160px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  z-index: 20;
+  animation: dropdownFade 0.15s ease;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tab-games-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  border-radius: 7px;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 12px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tab-games-item:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.tab-games-item-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e53935;
+  flex-shrink: 0;
+}
+
 /* ── Controls ────────────────────────────────────── */
 .controls {
   max-width: 1200px;

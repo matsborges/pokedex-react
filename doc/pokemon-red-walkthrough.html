@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokémon Red — Guia Completo</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-deep: #0f1021;
+    --bg-card: #1a1d35;
+    --bg-card-hover: #1f2340;
+    --bg-section: #13152a;
+    --border: rgba(255,255,255,0.07);
+    --border-active: rgba(255,255,255,0.15);
+    --text-primary: #e8eaf6;
+    --text-secondary: #8b90b8;
+    --text-muted: #4a5080;
+    --accent-red: #e53935;
+    --accent-red-soft: rgba(229, 57, 53, 0.15);
+    --accent-purple: #7c4dff;
+    --accent-purple-soft: rgba(124, 77, 255, 0.15);
+    --accent-gold: #ffd740;
+    --sidebar-w: 280px;
+  }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: var(--bg-section);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .logo-dot {
+    width: 12px; height: 12px;
+    background: var(--accent-red);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent-red);
+    flex-shrink: 0;
+  }
+
+  .logo-sub {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-left: 0.2rem;
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: auto;
+    font-size: 0.875rem;
+  }
+
+  .nav-tab {
+    padding: 0.4rem 0.875rem;
+    border-radius: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.15s;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 0.875rem;
+  }
+
+  .nav-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+  .nav-tab.active { color: var(--text-primary); background: rgba(255,255,255,0.08); }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: flex;
+    flex: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 2rem 1.5rem;
+    gap: 2rem;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    position: sticky;
+    top: 80px;
+    height: fit-content;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border-active); border-radius: 4px; }
+
+  .sidebar-header {
+    margin-bottom: 1rem;
+  }
+
+  .game-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent-red-soft);
+    border: 1px solid rgba(229, 57, 53, 0.3);
+    color: #ef9a9a;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  .game-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent-red);
+    border-radius: 50%;
+  }
+
+  .sidebar-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-top: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+
+  .sidebar-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+  }
+
+  .sidebar-progress {
+    margin: 1rem 0;
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+  }
+
+  .progress-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+  }
+
+  .progress-bar {
+    height: 3px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-red), var(--accent-purple));
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .progress-text {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 0.35rem;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sidebar-nav-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    padding: 0.5rem 0.5rem 0.3rem;
+    margin-top: 0.5rem;
+  }
+
+  .sidebar-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    text-decoration: none;
+  }
+
+  .sidebar-nav-item:hover {
+    color: var(--text-primary);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .sidebar-nav-item.active {
+    color: var(--text-primary);
+    background: var(--accent-red-soft);
+    border-color: rgba(229, 57, 53, 0.25);
+  }
+
+  .nav-icon { font-size: 0.9rem; width: 18px; text-align: center; flex-shrink: 0; }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .guide-hero {
+    background: linear-gradient(135deg, #1a0a0a 0%, #1a1d35 50%, #0f1021 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .guide-hero::before {
+    content: 'RED';
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 8rem;
+    font-weight: 900;
+    color: var(--accent-red);
+    opacity: 0.06;
+    letter-spacing: -0.05em;
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .hero-title span {
+    color: var(--accent-red);
+  }
+
+  .hero-desc {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    max-width: 560px;
+    line-height: 1.6;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .hero-stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .hero-stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── SECTION ── */
+  .guide-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .guide-section:hover {
+    border-color: var(--border-active);
+  }
+
+  .guide-section.expanded .section-body {
+    display: block;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+
+  .section-header:hover {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .section-num {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    width: 24px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+  }
+
+  .section-chevron {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .guide-section.expanded .section-chevron {
+    transform: rotate(180deg);
+  }
+
+  .section-body {
+    display: none;
+    padding: 0 1.25rem 1.25rem 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── MARKDOWN-LIKE CONTENT ── */
+  .section-content {
+    padding-top: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+
+  .section-content strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .section-content p {
+    margin-bottom: 0.75rem;
+  }
+
+  .section-content ul, .section-content ol {
+    margin: 0.5rem 0 0.75rem 1.25rem;
+  }
+
+  .section-content li {
+    margin-bottom: 0.3rem;
+  }
+
+  .section-content h3, .section-content h4 {
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin: 1.25rem 0 0.5rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.25rem 0;
+  }
+
+  /* Tables */
+  .section-content table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    margin: 0.75rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .section-content th {
+    background: rgba(255,255,255,0.04);
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.7rem;
+    padding: 0.6rem 0.85rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-content td {
+    padding: 0.55rem 0.85rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text-secondary);
+  }
+
+  .section-content tr:last-child td { border-bottom: none; }
+
+  .section-content tr:hover td {
+    background: rgba(255,255,255,0.02);
+    color: var(--text-primary);
+  }
+
+  /* Inline code/highlight */
+  .section-content code {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    color: #90caf9;
+    font-family: 'Consolas', monospace;
+  }
+
+  /* Type badges */
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.55rem;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin: 0 2px;
+  }
+
+  /* Warning callout */
+  .callout {
+    background: rgba(229, 57, 53, 0.08);
+    border: 1px solid rgba(229, 57, 53, 0.2);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    font-size: 0.82rem;
+    color: #ef9a9a;
+  }
+
+  .callout-tip {
+    background: rgba(124, 77, 255, 0.08);
+    border-color: rgba(124, 77, 255, 0.2);
+    color: #b39ddb;
+  }
+
+  .callout-info {
+    background: rgba(33, 150, 243, 0.08);
+    border-color: rgba(33, 150, 243, 0.2);
+    color: #90caf9;
+  }
+
+  /* ── SCROLL TO TOP ── */
+  .scroll-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 40px; height: 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-active);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .scroll-top.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .scroll-top:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+    border-color: var(--accent-red);
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .layout { flex-direction: column; padding: 1rem; }
+    .sidebar { width: 100%; position: static; max-height: none; }
+    .sidebar-nav { flex-direction: row; flex-wrap: wrap; }
+    .sidebar-nav-item { font-size: 0.75rem; padding: 0.4rem 0.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <a class="logo" href="#">
+    <span class="logo-dot"></span>
+    Pokédex
+    <span class="logo-sub">Geração I · 151 Pokémons</span>
+  </a>
+  <nav class="header-nav">
+    <a class="nav-tab" href="#">Todos</a>
+    <a class="nav-tab" href="#">Minha Pokédex</a>
+    <a class="nav-tab" href="#">Lista de Desejos</a>
+    <div style="width:1px;height:20px;background:var(--border);margin:0 0.25rem;"></div>
+    <a class="nav-tab active" href="#">Jogos ▾</a>
+  </nav>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span class="game-badge">Game Boy · 1996</span>
+      <div class="sidebar-title">Pokémon Red</div>
+      <div class="sidebar-meta">Guia definitivo em português</div>
+    </div>
+
+    <div class="sidebar-progress">
+      <div class="progress-label">Progresso de leitura</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">0 de 18 seções</div>
+    </div>
+
+    <div class="sidebar-nav-label">Conteúdo</div>
+    <nav class="sidebar-nav" id="sidebarNav">
+      <!-- preenchido via JS -->
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO -->
+    <div class="guide-hero">
+      <div class="hero-tag">🎮 Guia Definitivo</div>
+      <div class="hero-title">Pokémon <span>Red</span></div>
+      <div class="hero-desc">
+        Guia completo e detalhado do jogo original para Game Boy. Cobre desde a escolha do starter até a captura de Mewtwo, com rotas, itens secretos, Pokémon exclusivos e glitches famosos.
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-value">151</span>
+          <span class="hero-stat-label">Pokémon</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-value">8</span>
+          <span class="hero-stat-label">Ginásios</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-value">5</span>
+          <span class="hero-stat-label">Lendários</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-value">18</span>
+          <span class="hero-stat-label">Seções</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTIONS -->
+    <div id="sectionsContainer"></div>
+
+  </main>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const sections = [
+  {
+    id: "starter", icon: "🌿",
+    title: "Escolha Inicial — Os Três Iniciais",
+    content: `<p>Ao iniciar o jogo, o Professor Carvalho oferece três Pokémon. Sua escolha impacta toda a jornada.</p>
+<h3>Bulbasaur (Nº 001) — Grass/Poison</h3>
+<p>Melhor escolha para iniciantes. Domina os dois primeiros ginásios com facilidade. Aprende <strong>Vine Whip</strong> cedo, <strong>Leech Seed</strong> para sustentação e <strong>Sleep Powder</strong> para capturar. Evolui para Ivysaur (Lv 16) → Venusaur (Lv 32). Fraquezas: Fire, Ice, Flying, Psychic.</p>
+<h3>Charmander (Nº 004) — Fire</h3>
+<p>O mais difícil no início, mas recompensador. Brock e Misty são desafios reais. Charmeleon aprende <strong>Slash</strong> (alta taxa de crítico) e Charizard aprende <strong>Fly</strong>. Evolui para Charmeleon (Lv 16) → Charizard (Lv 36).</p>
+<h3>Squirtle (Nº 007) — Water</h3>
+<p>Equilíbrio entre facilidade e poder. Blastoise tem a maior Defense entre os starters. Aprende <strong>Bite</strong> e <strong>Skull Bash</strong> naturalmente. Evolui para Wartortle (Lv 16) → Blastoise (Lv 36).</p>
+<div class="callout callout-tip">💡 Independente de qual você escolher, Gary pegará o starter com vantagem de tipo contra o seu.</div>`
+  },
+  {
+    id: "pallet", icon: "🏘️",
+    title: "Pallet Town — Cidade Inicial",
+    content: `<p>A jornada começa aqui. Pequena, mas com detalhes importantes para não perder.</p>
+<h3>O que fazer aqui</h3>
+<ul>
+  <li>Fale com sua mãe antes de sair — ela salva o progresso automaticamente.</li>
+  <li>Tente sair pela rota norte <strong>sem Pokémon</strong>: o Professor Carvalho te chama de volta e você recebe o starter.</li>
+  <li>Após pegar o starter, explore a casa de Gary para conversar com a irmã dele, que dará o <strong>Town Map</strong>.</li>
+</ul>
+<h3>Pokémon na área — Rota 1</h3>
+<ul>
+  <li><strong>Pidgey</strong> (Lv 2–5) — comum</li>
+  <li><strong>Rattata</strong> (Lv 2–4) — comum</li>
+</ul>`
+  },
+  {
+    id: "viridian", icon: "🌲",
+    title: "Viridian City",
+    content: `<h3>Ginásio</h3>
+<p>Fechado no início. Giovanni só é acessível no final do jogo.</p>
+<h3>O que fazer</h3>
+<ol>
+  <li>Entregue o <strong>Parcel</strong> para o Professor Carvalho em Pallet Town (item no PokéMart de Viridian).</li>
+  <li>Volte para Viridian — o velho na entrada te ensina como capturar Pokémon (obrigatório para acessar Viridian Forest).</li>
+</ol>
+<h3>Itens na cidade</h3>
+<ul>
+  <li>Fresh Water (do velho à esquerda do PokéMart, uma vez por dia)</li>
+</ul>
+<h3>Pokémon ao redor</h3>
+<ul>
+  <li><strong>Rota 22</strong> (oeste): Nidoran♂ (comum), Nidoran♀ (incomum), Mankey (Red apenas)</li>
+</ul>
+<div class="callout callout-tip">💡 Capture Nidoran♂ ou ♀ na Rota 22 agora. Nidoking/Nidoqueen são poderosos e úteis por muito tempo.</div>`
+  },
+  {
+    id: "viridian-forest", icon: "🌳",
+    title: "Viridian Forest",
+    content: `<h3>Pokémon disponíveis</h3>
+<ul>
+  <li><strong>Caterpie</strong> (Lv 3–5) — muito comum em Red. Evolui em Butterfree (Sleep Powder + Psybeam = útil)</li>
+  <li><strong>Metapod</strong> (Lv 4–7) — comum</li>
+  <li><strong>Weedle</strong> (Lv 2–5) — comum. Evolui em Beedrill</li>
+  <li><strong>Pikachu</strong> (Lv 3–5) — <strong>raro!</strong> Vale a captura</li>
+</ul>
+<h3>Itens</h3>
+<ul>
+  <li>Antidote ×2, Potion, Escape Rope (canto nordeste)</li>
+</ul>
+<div class="callout callout-tip">💡 Butterfree com Sleep Powder facilita muito as capturas nos próximos ginásios. Vale evoluir Caterpie até Butterfree antes de Pewter City.</div>`
+  },
+  {
+    id: "pewter", icon: "⚔️",
+    title: "Pewter City — 1º Ginásio (Brock)",
+    content: `<h3>Ginásio de Brock — Tipo: Rock/Ground</h3>
+<h4>Time do Brock</h4>
+<ul>
+  <li>Geodude (Lv 12) — Rock/Ground</li>
+  <li>Onix (Lv 14) — Rock/Ground</li>
+</ul>
+<h3>Como vencer</h3>
+<ul>
+  <li><strong>Bulbasaur:</strong> fácil — Vine Whip funciona</li>
+  <li><strong>Squirtle:</strong> muito fácil — Water Gun/Bubble destroem</li>
+  <li><strong>Charmander:</strong> DIFÍCIL — não use ataques de fogo. Use Scratch + Growl, ou pegue Mankey (Rota 22) com Low Kick</li>
+</ul>
+<div class="callout">⚠️ Mankey com Low Kick é super efetivo contra Rock — a melhor solução para quem escolheu Charmander.</div>
+<h3>Recompensa</h3>
+<p><strong>Boulder Badge</strong> + TM34 (Bide)</p>
+<h3>Itens em Pewter</h3>
+<ul>
+  <li>Moon Stone (museu, 2F, atrás do cientista — use Cut)</li>
+  <li>Old Amber (museu 2F) — ressuscitado em Aerodactyl em Cinnabar</li>
+</ul>`
+  },
+  {
+    id: "mtmoon", icon: "🌑",
+    title: "Mt. Moon",
+    content: `<h3>Pokémon disponíveis</h3>
+<ul>
+  <li><strong>Zubat</strong> (Lv 6–12) — muito comum. Use Repel!</li>
+  <li><strong>Geodude</strong> (Lv 8–12) — comum. Golem é excelente</li>
+  <li><strong>Clefairy</strong> (Lv 8–12) — RARO. Vale muito capturar. Clefable é excelente</li>
+  <li><strong>Paras</strong> (Lv 8–13) — comum. Spore (100% sono) é único e poderoso</li>
+</ul>
+<h3>Fossils — Escolha UM</h3>
+<p>No final da caverna, você encontra dois Fossils. Só pode pegar um:</p>
+<ul>
+  <li><strong>Dome Fossil</strong> → Kabuto → Kabutops (Water/Rock, muito bom ofensivamente)</li>
+  <li><strong>Helix Fossil</strong> → Omanyte → Omastar (Water/Rock, melhor Special)</li>
+</ul>
+<p>Ambos são resgatados no Lab de Cinnabar Island muito mais tarde.</p>
+<h3>Itens notáveis</h3>
+<ul>
+  <li>TM12 (Water Gun), Escape Rope, Potion ×2</li>
+  <li><strong>Rare Candy</strong> (escondido)</li>
+  <li><strong>Moon Stone</strong> (escondido no canto NE da 1F)</li>
+</ul>
+<div class="callout callout-tip">💡 Capture Clefairy aqui. É raro, mas vale o esforço. Clefable com Metronome é o caos controlado — pode usar qualquer move do jogo.</div>`
+  },
+  {
+    id: "cerulean", icon: "💧",
+    title: "Cerulean City — 2º Ginásio (Misty)",
+    content: `<h3>Ginásio de Misty — Tipo: Water</h3>
+<h4>Time da Misty</h4>
+<ul>
+  <li>Staryu (Lv 18) — Water</li>
+  <li>Starmie (Lv 21) — Water/Psychic ⚠️</li>
+</ul>
+<h3>Como vencer</h3>
+<ul>
+  <li>Qualquer tipo <strong>Grass</strong> ou <strong>Electric</strong> resolve facilmente</li>
+  <li>Pikachu capturado em Viridian Forest brilha aqui</li>
+  <li>Cuidado: Starmie tem bom Special — não subestime</li>
+</ul>
+<h3>Recompensa</h3>
+<p><strong>Cascade Badge</strong> + TM11 (BubbleBeam)</p>
+<h3>Eventos em Cerulean</h3>
+<ul>
+  <li><strong>TM28 (Dig)</strong> — de um Rocket na casa ao norte do ginásio. Excelente TM de Ground!</li>
+  <li><strong>Bill's House (Rota 25):</strong> Bill está preso em forma de Pokémon. Ajude-o para receber o <strong>S.S. Ticket</strong> (acesso ao navio em Vermilion)</li>
+</ul>
+<h3>Pokémon nas redondezas</h3>
+<ul>
+  <li><strong>Rota 24/25:</strong> Oddish (Red), Abra (raro — foge no 1º turno), Venonat, Bellsprout (Blue)</li>
+</ul>
+<div class="callout callout-tip">💡 Abra foge no primeiro turno sempre. Use uma Poké Ball imediatamente ao encontrar. Alakazam tem o maior Special do jogo.</div>`
+  },
+  {
+    id: "vermilion", icon: "⚡",
+    title: "Vermilion City — 3º Ginásio (Lt. Surge)",
+    content: `<h3>S.S. Anne (antes do ginásio)</h3>
+<ul>
+  <li>Derrote Gary no navio</li>
+  <li>Cure o Capitão de enjoo → receba <strong>HM01 (Cut)</strong> — necessário para avançar</li>
+  <li>O navio parte após pegar Cut — não volte depois</li>
+  <li>Itens no navio: Great Ball, Revive, vários TMs</li>
+</ul>
+<h3>Ginásio de Lt. Surge — Tipo: Electric</h3>
+<p><strong>Puzzle do lixo:</strong> Dois lixos escondem alavancas. A primeira é aleatória. A segunda está SEMPRE ao lado da primeira. Se errar, o padrão muda.</p>
+<h4>Time do Lt. Surge</h4>
+<ul>
+  <li>Voltorb (Lv 21), Pikachu (Lv 18), Raichu (Lv 24) ⚠️</li>
+</ul>
+<h3>Como vencer</h3>
+<ul>
+  <li><strong>Ground type:</strong> Diglett/Dugtrio são imunes a Electric e causam dano ×2. Perfeito!</li>
+  <li>Geodude/Graveler/Golem: também Ground, funciona bem</li>
+</ul>
+<h3>Recompensa</h3>
+<p><strong>Thunder Badge</strong> + <strong>TM24 (Thunderbolt)</strong> 🏆 — uma das melhores TMs do jogo!</p>
+<h3>Itens em Vermilion</h3>
+<ul>
+  <li><strong>Bike Voucher</strong> — do Presidente do Pokémon Fan Club (troque pela Bicicleta no Cerulean PokéMart)</li>
+  <li><strong>Old Rod</strong> — do pescador na cidade</li>
+</ul>
+<h3>Diglett's Cave (noroeste de Vermilion)</h3>
+<ul>
+  <li>Diglett (fácil de capturar) e Dugtrio (raro). Dugtrio é um dos mais rápidos da Gen I</li>
+</ul>`
+  },
+  {
+    id: "lavender", icon: "👻",
+    title: "Lavender Town & Pokémon Tower",
+    content: `<p>Lavender Town é famosa pelo tema musical perturbador. A torre é assombrada pelos espíritos de Pokémon mortos.</p>
+<h3>Pokémon na Torre</h3>
+<ul>
+  <li><strong>Gastly</strong> (Lv 14–21) — comum. Gengar tem stats excelentes e é um dos melhores da Gen I</li>
+  <li><strong>Haunter</strong> (Lv 21–28) — incomum</li>
+  <li><strong>Cubone</strong> (Lv 15–18) — incomum. Marowak com Thick Club é devastador</li>
+</ul>
+<div class="callout">⚠️ O espírito de Marowak no 5F <strong>não pode ser capturado</strong>. É um evento de história.</div>
+<h3>Para acessar o topo</h3>
+<p>Você precisa do <strong>Silph Scope</strong> (na sede da Team Rocket em Celadon City). Sem ele, os Gastly bloqueiam o progresso.</p>
+<h3>No topo da torre</h3>
+<ul>
+  <li>Derrote os 3 Rockets</li>
+  <li>Libere o espírito de Marowak (batalha obrigatória)</li>
+  <li>Mr. Fuji está prisioneiro — libere-o para receber a <strong>Poké Flute</strong> (acorda Snorlax)</li>
+</ul>
+<h3>Snorlax (×2)</h3>
+<p>Um bloqueia a <strong>Rota 12</strong> (sul de Lavender) e outro a <strong>Rota 16</strong> (oeste de Celadon). Use a Poké Flute para acordar. Snorlax é Lv 30 — <strong>vale muito capturar</strong> (HP altíssimo, aprende Amnesia e Rest).</p>`
+  },
+  {
+    id: "celadon", icon: "🌿",
+    title: "Celadon City — 4º Ginásio (Erika)",
+    content: `<h3>Ginásio de Erika — Tipo: Grass</h3>
+<h4>Time da Erika</h4>
+<ul>
+  <li>Victreebel (Lv 29), Tangela (Lv 24), Vileplume (Lv 29)</li>
+</ul>
+<p>Fire, Ice, Flying, Poison — qualquer um funciona. O momento de brilhar do Charmander.</p>
+<h3>Recompensa</h3>
+<p><strong>Rainbow Badge</strong> + TM21 (Mega Drain)</p>
+<h3>Game Corner</h3>
+<ul>
+  <li>Compre fichas ou ache no chão (clique nas mesas)</li>
+  <li><strong>Prêmios notáveis:</strong> Dratini (2800 fichas) → Dragonite no final, Scyther (5500 — Red exclusivo), Porygon (9999)</li>
+  <li>TM23 (Dragon Rage) — 3300 fichas</li>
+</ul>
+<div class="callout callout-tip">💡 Dratini é o mais valioso — Dragonite é um dos Pokémon mais fortes do jogo.</div>
+<h3>Rocket Hideout (alavanca atrás do poster no Game Corner)</h3>
+<p>Vários andares com Rockets. Giovanni tem: Nidorino (Lv 25), Rhyhorn (Lv 24), Kangaskhan (Lv 29).</p>
+<p>Recompensa: <strong>Silph Scope</strong> — necessário para a Pokémon Tower.</p>
+<h3>Celadon Department Store — Itens importantes</h3>
+<ul>
+  <li><strong>2F:</strong> TMs — Body Slam, Thunderbolt, Ice Beam, Fire Blast, SolarBeam, Reflect</li>
+  <li><strong>5F:</strong> Fire Stone, Water Stone, Thunder Stone, Leaf Stone</li>
+  <li><strong>Rooftop:</strong> Fresh Water, Soda Pop, Lemonade — mais baratas que Potions. Compre bastante!</li>
+</ul>
+<h3>Eevee (exclusivo)</h3>
+<p>No topo do Celadon Mansion (entrada dos fundos). Eevee Lv 25 dentro de um item ball. Escolha a evolução conforme sua estratégia: <strong>Vaporeon</strong> (melhor HP), <strong>Jolteon</strong> (melhor Speed), <strong>Flareon</strong> (melhor Attack).</p>`
+  },
+  {
+    id: "silph", icon: "🏢",
+    title: "Saffron City & Silph Co.",
+    content: `<h3>Fighting Dojo (opcional)</h3>
+<p>Derrote o mestre para receber <strong>Hitmonlee</strong> ou <strong>Hitmonchan</strong> (escolha um).</p>
+<ul>
+  <li><strong>Hitmonlee:</strong> mais Attack e Speed, Hi Jump Kick poderoso</li>
+  <li><strong>Hitmonchan:</strong> mais Defense, aprende socos elementais via TM (Fire/Ice/Thunder Punch)</li>
+</ul>
+<h3>Silph Co. (11 andares — infestado de Rockets)</h3>
+<ul>
+  <li>Gary aparece para batalhar no <strong>7F</strong></li>
+  <li>Giovanni é o chefe final no <strong>11F</strong>: Nidorino (Lv 37), Kangaskhan (Lv 35), Rhyhorn (Lv 37), Nidoqueen (Lv 41)</li>
+</ul>
+<h3>Recompensas na Silph Co.</h3>
+<ul>
+  <li><strong>Lapras</strong> (presente de um funcionário após derrotar Giovanni — Lv 15, Water/Ice, excelente Pokémon!)</li>
+  <li><strong>Master Ball</strong> — no escritório do presidente. A única do jogo!</li>
+  <li>TM26 (Earthquake) — uma das melhores TMs físicas do jogo</li>
+  <li>Rare Candy ×2, Card Key (necessária para as portas)</li>
+</ul>
+<div class="callout">⚠️ <strong>GUARDE A MASTER BALL PARA MEWTWO.</strong> Não use em nenhum outro Pokémon.</div>
+<h3>Ginásio de Sabrina — Tipo: Psychic</h3>
+<h4>Time da Sabrina</h4>
+<ul>
+  <li>Kadabra (Lv 38), Mr. Mime (Lv 37), Venomoth (Lv 38), Alakazam (Lv 43) ⚠️</li>
+</ul>
+<p>Bug type é super efetivo. Por um <strong>glitch de Gen I</strong>, Ghost é inefetivo contra Psychic — não use Gengar aqui!</p>
+<h3>Recompensa</h3>
+<p><strong>Marsh Badge</strong> + TM46 (Psywave)</p>`
+  },
+  {
+    id: "fuchsia", icon: "🎯",
+    title: "Fuchsia City — 5º Ginásio (Koga)",
+    content: `<h3>Ginásio de Koga — Tipo: Poison</h3>
+<p><strong>Puzzle:</strong> Paredes invisíveis. Navegue tentando passar por onde não parece ter saída.</p>
+<h4>Time do Koga</h4>
+<ul>
+  <li>Koffing (Lv 37), Muk (Lv 39), Koffing (Lv 37), Weezing (Lv 43) ⚠️</li>
+</ul>
+<p>Ground e Psychic são super efetivos. Koga usa Smokescreen, Toxic e Minimize — seja agressivo e rápido.</p>
+<h3>Recompensa</h3>
+<p><strong>Soul Badge</strong> + TM06 (Toxic)</p>
+<h3>HM Surf</h3>
+<p>Na casa ao lado do Safari Zone. Um velho te dá <strong>HM03 (Surf)</strong> após entrar no Safari Zone. <strong>Surf é obrigatório para continuar o jogo.</strong></p>
+<h3>Safari Zone — Pokémon raros e exclusivos</h3>
+<p>Entrada: 500 PD. 500 passos disponíveis. Mecânica especial: Safari Balls, Rocks e Bait em vez de batalha.</p>
+<ul>
+  <li><strong>Kangaskhan</strong> (raro) — único lugar!</li>
+  <li><strong>Scyther</strong> (Red exclusivo, raro)</li>
+  <li><strong>Chansey</strong> (muito raro) — HP altíssimo, aprende Softboiled</li>
+  <li><strong>Tauros</strong> (raro) — muito usado no competitivo de Gen I</li>
+  <li>Exeggcute, Rhyhorn, Parasect, Venomoth</li>
+</ul>
+<h3>Itens no Safari Zone</h3>
+<ul>
+  <li><strong>HM04 (Strength)</strong> — área 2 (via Gold Teeth trocados com o velho em Fuchsia)</li>
+  <li>TM37 (Egg Bomb), TM40 (Skull Bash)</li>
+  <li><strong>Super Rod</strong> — no Pokémon Lab na entrada. Pesca Dratini aqui!</li>
+</ul>`
+  },
+  {
+    id: "seafoam", icon: "🧊",
+    title: "Seafoam Islands & Articuno",
+    content: `<p><strong>Localização:</strong> Entre Fuchsia e Cinnabar Island (Rota 20), acessível com Surf.</p>
+<h3>Pokémon disponíveis</h3>
+<ul>
+  <li>Zubat/Golbat (comum), Seel → Dewgong, Slowpoke, Psyduck</li>
+  <li>Horsea, Krabby (com Super Rod)</li>
+</ul>
+<h3>Puzzle das pedras</h3>
+<p>Use <strong>Strength</strong> para empurrar pedras e bloquear as correntezas. Bloqueie as 4 correntezas para acessar o fundo onde está Articuno.</p>
+<h3>Articuno (Lendário — Lv 50, Ice/Flying)</h3>
+<ul>
+  <li>Salve antes de batalhar!</li>
+  <li>Fraquezas: Rock, Electric, Fire, Steel</li>
+  <li>Moveset: Blizzard, Mist, Ice Beam, Agility</li>
+  <li>Cuidado com Blizzard — alta chance de congelar em Gen I (congelamento é permanente!)</li>
+</ul>
+<div class="callout callout-tip">💡 Use Ultra Balls com o Pokémon em sono (Sleep Powder de Butterfree/Venusaur) e HP no vermelho. Taxa de captura muito maior.</div>`
+  },
+  {
+    id: "cinnabar", icon: "🔥",
+    title: "Cinnabar Island — 7º Ginásio (Blaine)",
+    content: `<h3>Pokémon Mansion (obrigatório)</h3>
+<p>Busque a <strong>Secret Key</strong> para abrir o ginásio de Blaine.</p>
+<ul>
+  <li><strong>Growlithe</strong> (Red exclusivo), Grimer, Muk, Koffing, Weezing</li>
+  <li><strong>Magmar</strong> (Red exclusivo, Lv 28–38) — exclusivo de Red, ótimo Pokémon de fogo!</li>
+</ul>
+<h3>Itens na Mansion</h3>
+<ul>
+  <li>Secret Key (abre o Gym), TM14 (Blizzard), TM22 (SolarBeam), TM36 (Selfdestruct)</li>
+  <li>Calcium, Carbos, Iron (Vitaminas para stats permanentes)</li>
+</ul>
+<h3>Pokémon Lab de Cinnabar</h3>
+<ul>
+  <li>Traga o <strong>Dome/Helix Fossil</strong> para ressuscitar Kabuto/Omanyte</li>
+  <li>Traga o <strong>Old Amber</strong> (museu de Pewter) para receber <strong>Aerodactyl</strong> (Rock/Flying, altíssima Speed)</li>
+</ul>
+<h3>Ginásio de Blaine — Tipo: Fire</h3>
+<p><strong>Puzzle:</strong> Quiz de perguntas. Erre para batalhar com treinadores extras.</p>
+<h4>Time do Blaine</h4>
+<ul>
+  <li>Growlithe (Lv 42), Ponyta (Lv 40), Rapidash (Lv 42), Arcanine (Lv 47) ⚠️</li>
+</ul>
+<p>Water, Rock, Ground são super efetivos. Surf destrói tudo aqui.</p>
+<h3>Recompensa</h3>
+<p><strong>Volcano Badge</strong> + TM38 (Fire Blast)</p>
+<h3>Glitch do Mew (Rota 24/25)</h3>
+<ol>
+  <li>Vá para Rota 24. NÃO entre em batalha com o Youngster com Slowpoke (Lv 17). Salve.</li>
+  <li>Dê um passo em direção ao Youngster → pressione Start antes de ele te ver → use Fly/Teleport para fugir.</li>
+  <li>O menu ficará bloqueado. Viaje para Cerulean City.</li>
+  <li>Lute contra o Trainer que você pulou (ele vai te desafiar ao voltar).</li>
+  <li>Após derrotá-lo, use Fly para voltar à Rota 24. O menu abre com batalha aleatória — será <strong>Mew (Lv 7)!</strong></li>
+</ol>`
+  },
+  {
+    id: "viridian-gym", icon: "🏆",
+    title: "Viridian City — 8º Ginásio (Giovanni)",
+    content: `<h3>Ginásio de Giovanni — Tipo: Ground</h3>
+<p><strong>Puzzle:</strong> Spinners no chão giram sua direção automaticamente.</p>
+<h4>Time do Giovanni</h4>
+<ul>
+  <li>Rhyhorn (Lv 45), Dugtrio (Lv 42), Nidoqueen (Lv 44), Nidoking (Lv 45), Rhydon (Lv 50) ⚠️</li>
+</ul>
+<h3>Como vencer</h3>
+<ul>
+  <li>Water e Ice destroem: Surf + Ice Beam é imbatível aqui</li>
+  <li>Grass também funciona muito bem</li>
+  <li><strong>Evite Electric</strong> — Ground é imune!</li>
+</ul>
+<h3>Recompensa</h3>
+<p><strong>Earth Badge</strong> + TM27 (Fissure)</p>
+<div class="callout callout-tip">💡 Após o 8º Badge, você tem acesso à Rota 22 → Victory Road → Elite Four. Treine o time para Lv 50+ antes de continuar.</div>`
+  },
+  {
+    id: "victory-road", icon: "🗻",
+    title: "Victory Road & Moltres",
+    content: `<h3>Pokémon disponíveis</h3>
+<ul>
+  <li>Zubat/Golbat (muito comum — use Repel!), Geodude/Graveler, Onix, Machop/Machoke, Venomoth</li>
+</ul>
+<h3>Moltres (Lendário — Lv 50, Fire/Flying)</h3>
+<p>No <strong>2F</strong>, use Strength para empurrar pedras e acessá-lo. <strong>Salve antes!</strong></p>
+<ul>
+  <li>Fraquezas: Water, Rock, Electric</li>
+  <li>Moveset: Fire Spin, Leer, Agility, Sky Attack</li>
+</ul>
+<h3>Itens</h3>
+<ul>
+  <li>TM43 (Sky Attack), TM13 (Ice Beam), Full Restore, Max Revive</li>
+</ul>
+<h3>Puzzle</h3>
+<p>Pedras com Strength precisam ser empurradas para os pedestais certos para abrir a passagem.</p>
+<div class="callout">⚠️ A Elite Four não permite saída para curar entre batalhas. Prepare bastante Full Restore, Max Revive e Elixir antes de entrar.</div>`
+  },
+  {
+    id: "elite-four", icon: "👑",
+    title: "Elite Four & Campeão Gary",
+    content: `<div class="callout callout-tip">💡 Itens recomendados: Max Potion / Full Restore ×20+, Max Revive ×10+, Full Heal, Elixir/Ether, Antidote, Awakening, Ice Heal</div>
+<hr>
+<h3>Lorelei — Tipo: Ice/Water</h3>
+<ul>
+  <li>Dewgong (Lv 54), Cloyster (Lv 53), Slowbro (Lv 54), Jynx (Lv 56), Lapras (Lv 60) ⚠️</li>
+</ul>
+<p>Electric (vs Water), Fire, Fighting (vs Ice). Lorelei usa Double Team e Rest — seja agressivo!</p>
+<hr>
+<h3>Bruno — Tipo: Fighting/Rock</h3>
+<ul>
+  <li>Onix (Lv 53), Hitmonchan (Lv 55), Hitmonlee (Lv 55), Onix (Lv 56), Machamp (Lv 58) ⚠️</li>
+</ul>
+<p>Psychic, Water (Onix), Flying. O mais fácil da Elite Four.</p>
+<hr>
+<h3>Agatha — Tipo: Ghost/Poison</h3>
+<ul>
+  <li>Gengar (Lv 54), Haunter (Lv 53), Gengar (Lv 58), Arbok (Lv 56), Gengar (Lv 60) ⚠️</li>
+</ul>
+<p>Por glitch de Gen I, use Psychic ou Ground. Agatha usa Confuse Ray e Hypnosis — tenha Full Heal!</p>
+<hr>
+<h3>Lance — Tipo: Dragon</h3>
+<ul>
+  <li>Gyarados (Lv 58), Dragonair (Lv 56) ×2, Aerodactyl (Lv 60), Dragonite (Lv 62) ⚠️</li>
+</ul>
+<p>Ice destrói Dragon e Flying. Blizzard e Ice Beam são essenciais. Cuidado com o Hyper Beam do Dragonite.</p>
+<hr>
+<h3>Gary (Campeão) — Time varia conforme seu starter</h3>
+<p>Sempre tem: Pidgeot (Lv 61), Alakazam (Lv 59), Rhydon (Lv 61), Exeggutor (Lv 61), Gyarados (Lv 61) + o starter com vantagem sobre o seu (Lv 65).</p>
+<ul>
+  <li>Pidgeot → Electric ou Ice</li>
+  <li>Alakazam → qualquer move forte (baixa Defense)</li>
+  <li>Rhydon → Water, Grass, Ice</li>
+  <li>Exeggutor → Fire, Ice, Bug, Flying</li>
+  <li>Gyarados → Electric</li>
+</ul>`
+  },
+  {
+    id: "postgame", icon: "🌊",
+    title: "Pós-jogo — Cerulean Cave & Mewtwo",
+    content: `<h3>Cerulean Cave (após se tornar Campeão)</h3>
+<h4>Pokémon na caverna</h4>
+<ul>
+  <li><strong>Ditto</strong> (incomum) — único lugar para capturar!</li>
+  <li>Kadabra, Rhydon, Machoke, Parasect, Magneton, Venomoth, Marowak</li>
+</ul>
+<h3>Mewtwo (Lv 70 — Psychic)</h3>
+<p>O mais forte do jogo. Está no fundo da Cerulean Cave.</p>
+<div class="callout">⚠️ <strong>USE A MASTER BALL AQUI.</strong> Se já usou, durma-o (Sleep Powder ou Spore), reduza HP ao vermelho e spam Ultra Balls. Salve ANTES.</div>
+<ul>
+  <li>Moveset: Psystrike, Swift, Recover, Amnesia</li>
+  <li>Maior Special e Speed de qualquer Pokémon em Gen I</li>
+</ul>
+<h3>Diploma de conclusão</h3>
+<p>Complete toda a Pokédex (151 Pokémon) e vá ao <strong>Game Freak Office em Celadon City</strong>. O desenvolvedor te dá um Diploma — a maior conquista do jogo!</p>
+<h3>Exclusivos de Red ainda não capturados</h3>
+<ul>
+  <li>Ekans/Arbok, Oddish/Gloom/Vileplume, Growlithe/Arcanine</li>
+  <li>Scyther (Safari Zone ou Game Corner), Electabuzz (Power Plant), Magmar (Pokémon Mansion)</li>
+</ul>`
+  },
+  {
+    id: "tips", icon: "💡",
+    title: "Dicas Gerais & Glitches Famosos",
+    content: `<h3>Dicas de Progresso</h3>
+<ul>
+  <li>Sempre tenha <strong>Repel</strong> em zonas de Zubat (Mt. Moon, Rock Tunnel, Victory Road)</li>
+  <li>Ensine HMs para Pokémon fora do time principal — Poliwrath aprende Surf e Strength, por exemplo</li>
+  <li><strong>TM29 (Psychic)</strong> é a move mais útil de Gen I — Saffron City (casa ao sul)</li>
+  <li>Em Gen I, Special Attack e Defense são a mesma stat — Pokémon com alto Special dominam ofensiva e defensivamente</li>
+  <li><strong>Dragonite</strong> aprende Surf, Thunder, Blizzard e Fire Blast por TM — cobertura total!</li>
+</ul>
+<h3>Glitches Famosos</h3>
+<h4>Missingno (Duplicação de itens)</h4>
+<p>Surfe na costa leste de Cinnabar Island (Rota 21) após falar com o velho em Viridian. Você encontra Missingno — batalhar com ele <strong>duplica o 6º item da bag</strong>. Use para duplicar Rare Candy, Nuggets ou Master Balls.</p>
+<h4>Mew Glitch</h4>
+<p>Descrito na seção de Cinnabar Island. Permite capturar Mew (Lv 7) sem eventos especiais. Mew pode usar qualquer TM/HM do jogo.</p>
+<h4>Ghost vs Psychic (glitch de tipo)</h4>
+<p>Ghost deveria ser super efetivo contra Psychic, mas por um glitch de programação, é completamente inefetivo. Gengar não funciona bem contra Alakazam/Sabrina.</p>
+<h4>Hyper Beam (sem recarga ao nocautear)</h4>
+<p>Em Gen I, se Hyper Beam nocautear o oponente, o usuário <strong>não precisa recarregar</strong>. Abuse disso contra a Elite Four!</p>
+<h4>Congelamento permanente</h4>
+<p>Em Gen I, congelamento é permanente até ser atingido por um ataque de fogo. Articuno, Lapras e Jynx são extremamente perigosos por isso.</p>
+<h3>Time Recomendado</h3>
+<table>
+  <tr><th>Slot</th><th>Pokémon</th><th>Motivo</th></tr>
+  <tr><td>1</td><td>Charizard / Blastoise / Venusaur</td><td>Seu starter — familiaridade e poder</td></tr>
+  <tr><td>2</td><td>Alakazam</td><td>Psychic dominante, maior Special offensivo</td></tr>
+  <tr><td>3</td><td>Lapras</td><td>Water/Ice, tanque, cobre Dragon e Flying</td></tr>
+  <tr><td>4</td><td>Rhydon / Golem</td><td>Ground/Rock, cobre Fire e Electric</td></tr>
+  <tr><td>5</td><td>Starmie</td><td>Water/Psychic, muito versátil e rápido</td></tr>
+  <tr><td>6</td><td>Dragonite / Gengar</td><td>Poder bruto / Special alto e velocidade</td></tr>
+</table>`
+  }
+];
+
+// Build sidebar nav
+const sidebarNav = document.getElementById('sidebarNav');
+const container = document.getElementById('sectionsContainer');
+
+sections.forEach((s, i) => {
+  // Sidebar item
+  const a = document.createElement('a');
+  a.href = `#section-${s.id}`;
+  a.className = 'sidebar-nav-item';
+  a.dataset.id = s.id;
+  a.innerHTML = `<span class="nav-icon">${s.icon}</span>${s.title.replace(/[🌿🏘️🌲🌳⚔️🌑💧⚡👻🌿🏢🎯🧊🔥🏆🗻👑🌊💡]/gu, '').trim()}`;
+  sidebarNav.appendChild(a);
+
+  // Section card
+  const div = document.createElement('div');
+  div.className = 'guide-section';
+  div.id = `section-${s.id}`;
+  div.innerHTML = `
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">${String(i+1).padStart(2,'0')}</span>
+      <span class="section-title">${s.icon} ${s.title}</span>
+      <span class="section-chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="section-content">${s.content}</div>
+    </div>
+  `;
+  container.appendChild(div);
+});
+
+// Expand first section by default
+document.querySelector('.guide-section').classList.add('expanded');
+
+function toggleSection(header) {
+  const section = header.parentElement;
+  section.classList.toggle('expanded');
+  updateProgress();
+}
+
+// Progress tracking
+function updateProgress() {
+  const expanded = document.querySelectorAll('.guide-section.expanded').length;
+  const total = sections.length;
+  const pct = Math.round((expanded / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${expanded} de ${total} seções`;
+}
+
+// Active sidebar nav on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id.replace('section-', '');
+      document.querySelectorAll('.sidebar-nav-item').forEach(el => {
+        el.classList.toggle('active', el.dataset.id === id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+document.querySelectorAll('.guide-section').forEach(el => observer.observe(el));
+
+// Scroll to top button
+const scrollTop = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => {
+  scrollTop.classList.toggle('visible', window.scrollY > 400);
+});
+
+updateProgress();
+</script>
+</body>
+</html>

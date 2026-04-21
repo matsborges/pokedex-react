@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import PokemonCard from './components/PokemonCard'
 import SkeletonCard from './components/SkeletonCard'
 import PokemonModal from './components/PokemonModal'
 import Pokeball from './components/Pokeball'
 import Heart from './components/Heart'
+import GuideRedPage from './pages/GuideRedPage'
 import { ALL_TYPES, TYPE_COLORS } from './utils/typeColors'
 import './App.css'
 
@@ -33,6 +34,9 @@ export default function App() {
   const [activeTab, setActiveTab]   = useState('all')
   const [captured, setCaptured]     = useState(() => loadSet(CAPTURED_KEY))
   const [wished, setWished]         = useState(() => loadSet(WISHED_KEY))
+  const [page, setPage]             = useState('pokedex')
+  const [gamesOpen, setGamesOpen]   = useState(false)
+  const gamesRef                    = useRef(null)
 
   useEffect(() => {
     async function fetchAll() {
@@ -88,8 +92,22 @@ export default function App() {
     })
   }, [pokemon, search, activeType, activeTab, captured, wished])
 
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (gamesRef.current && !gamesRef.current.contains(e.target)) {
+        setGamesOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   const showMineEmpty = activeTab === 'mine' && !loading && captured.size === 0
   const showWishEmpty = activeTab === 'wish' && !loading && wished.size === 0
+
+  if (page === 'guide-red') {
+    return <GuideRedPage onBack={() => setPage('pokedex')} />
+  }
 
   return (
     <div className="app">
@@ -134,6 +152,27 @@ export default function App() {
               {wished.size}
             </span>
           </button>
+
+          <div className="tab-games-wrap" ref={gamesRef}>
+            <button
+              className={`tab tab-games${gamesOpen ? ' tab-active' : ''}`}
+              onClick={() => setGamesOpen(o => !o)}
+            >
+              Jogos
+              <span className={`tab-games-chevron${gamesOpen ? ' open' : ''}`}>▾</span>
+            </button>
+            {gamesOpen && (
+              <div className="tab-games-dropdown">
+                <button
+                  className="tab-games-item"
+                  onClick={() => { setPage('guide-red'); setGamesOpen(false) }}
+                >
+                  <span className="tab-games-item-dot" />
+                  Pokémon Red
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
